@@ -1,0 +1,41 @@
+---
+- name: Install base program
+  hosts: new_server
+  become: yes
+  tasks:
+
+    - name: update cache
+      apt:
+        update_cache: yes
+
+    - name: install snmp and mibs
+      apt:
+        pkg:
+        - snmpd
+        - snmp-mibs-downloader
+        state: latest
+    - name: config snmp, enable import mib
+      template:
+        src: templates/snmp/snmp.j2
+        dest: /etc/snmp/snmp.conf
+    - name: set interface listen
+      template:
+        src: templates/snmp/snmpd.j2
+        dest: /etc/snmp/snmpd.conf
+      notify: reload snmpd
+
+    - name: install midnight commander
+      apt:
+        name: mc
+        state: latest
+      notify: mc installed
+
+    - name: install net-tools
+      apt:
+        name: net-tools
+        state: latest
+      notify: net-tools installed
+
+  handlers:
+    - name: reload snmpd
+      service: name=snmpd state=restarted

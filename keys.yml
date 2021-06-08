@@ -1,0 +1,7 @@
+---
+- hosts: new_server
+  tasks:
+  - name: Set up authorized_keys for the user
+    authorized_key: user=alex key="{{ item }}"
+    with_file:
+    - ../.ssh/id_rsa.pub
