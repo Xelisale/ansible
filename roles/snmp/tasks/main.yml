@@ -1,25 +1,22 @@
-name: Install snmp
-  become: yes
-  tasks:
+---
+- name: update cache
+  apt:
+    update_cache: yes
 
-    - name: update cache
-      apt:
-        update_cache: yes
+- name: install snmp and mibs
+  apt:
+    pkg:
+    - snmpd
+    - snmp-mibs-downloader
+    state: latest
 
-    - name: install snmp and mibs
-      apt:
-        pkg:
-        - snmpd
-        - snmp-mibs-downloader
-        state: latest
-        
-    - name: config snmp, enable import mib
-      template:
-        src: templates/snmp/snmp.j2
-        dest: /etc/snmp/snmp.conf
+- name: config snmp, enable import mib
+  template:
+    src: templates/snmp/snmp.j2
+    dest: /etc/snmp/snmp.conf
 
-    - name: set interface listen
-      template:
-        src: templates/snmp/snmpd.j2
-        dest: /etc/snmp/snmpd.conf
-      notify: reload snmpd
+- name: set interface listen
+  template:
+    src: templates/snmp/snmpd.j2
+    dest: /etc/snmp/snmpd.conf
+  notify: reload snmpd

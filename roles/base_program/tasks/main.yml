@@ -1,0 +1,12 @@
+---
+- name: install midnight commander
+  apt:
+    name: mc
+    state: latest
+  notify: mc installed
+
+- name: install net-tools
+  apt:
+    name: net-tools
+    state: latest
+  notify: net-tools installed
